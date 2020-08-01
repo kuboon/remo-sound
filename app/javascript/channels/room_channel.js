@@ -1,17 +1,21 @@
 import consumer from './consumer'
 
 const hostElm = document.getElementById('host')
+function print (msg) {
+  hostElm.insertAdjacentHTML('beforeend', `<p>${msg}</p>`)
+}
 if (hostElm) {
   consumer.subscriptions.create('RoomChannel', {
     connected () {
-      // Called when the subscription is ready for use on the server
+      print('接続しました')
     },
 
     disconnected () {
-      // Called when the subscription has been terminated by the server
+      print('切断しました')
     },
 
     received (data) {
+      print('受信: ' + data)
       const source = context.createBufferSource()
       source.buffer = buffers[data]
       source.connect(context.destination)
