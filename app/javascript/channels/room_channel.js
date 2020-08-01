@@ -28,6 +28,7 @@ if (hostElm) {
   })
 
   const audioFiles = ['cheer', 'applause']
+  const AudioContext = window.AudioContext || window.webkitAudioContext
   const context = new AudioContext()
   const buffers = {}
   audioFiles.forEach(n =>
@@ -35,5 +36,6 @@ if (hostElm) {
       .then(r => r.arrayBuffer())
       .then(x => context.decodeAudioData(x))
       .then(buf => (buffers[n] = buf))
+      .catch(print)
   )
 }
