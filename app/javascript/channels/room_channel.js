@@ -19,7 +19,7 @@ if (hostElm) {
       const source = context.createBufferSource()
       source.buffer = buffers[data]
       source.connect(context.destination)
-      source.start()
+      source.noteOn(0)
     },
 
     sound: function () {
