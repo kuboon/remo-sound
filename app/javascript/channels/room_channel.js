@@ -5,6 +5,17 @@ function print (msg) {
   hostElm.insertAdjacentHTML('beforeend', `<p>${msg}</p>`)
 }
 if (hostElm) {
+  function play (name) {
+    try {
+      print('再生: ' + name)
+      const source = context.createBufferSource()
+      source.buffer = buffers[name]
+      source.connect(context.destination)
+      source.start()
+    } catch (e) {
+      print(e)
+    }
+  }
   consumer.subscriptions.create('RoomChannel', {
     connected () {
       print('接続しました')
@@ -15,11 +26,7 @@ if (hostElm) {
     },
 
     received (data) {
-      print('受信: ' + data)
-      const source = context.createBufferSource()
-      source.buffer = buffers[data]
-      source.connect(context.destination)
-      source.noteOn(0)
+      play(data)
     },
 
     sound: function () {
@@ -34,8 +41,18 @@ if (hostElm) {
   audioFiles.forEach(n =>
     fetch(`/sounds/${n}.mp3`)
       .then(r => r.arrayBuffer())
-      .then(x => context.decodeAudioData(x))
-      .then(buf => (buffers[n] = buf))
-      .catch(print)
+      .then(x => context.decodeAudioData(x, buf => (buffers[n] = buf)))
+      .catch(e => {
+        print(e)
+        print(JSON.stringify(e))
+      })
   )
+  document.addEventListener('touchstart', initAudioContext)
+  function initAudioContext () {
+    document.removeEventListener('touchstart', initAudioContext)
+    // wake up AudioContext
+    const emptySource = context.createBufferSource()
+    emptySource.start()
+    emptySource.stop()
+  }
 }
