@@ -5,5 +5,7 @@ class RoomChannel < ApplicationCable::Channel
 
   def unsubscribed; end
 
-  def sound; end
+  def sound(data)
+    ActionCable.server.broadcast('sound', data)
+  end
 end

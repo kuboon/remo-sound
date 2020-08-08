@@ -13,18 +13,3 @@ require('channels')
 //
 // const images = require.context('../images', true)
 // const imagePath = (name) => images(name, true)
-
-function send (name) {
-  const token = document.getElementsByName('csrf-token')[0].content
-  fetch('/api/send_sound', {
-    credentials: 'same-origin',
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'X-Requested-With': 'XMLHttpRequest',
-      'X-CSRF-Token': token
-    },
-    body: JSON.stringify({ name })
-  })
-}
-window.send = send
