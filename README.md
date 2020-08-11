@@ -1,26 +1,11 @@
 [![Gitpod ready-to-code](https://img.shields.io/badge/Gitpod-ready--to--code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/kuboon/remo-sound)
 
-# README
+# USAGE
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+http://localhost:3000
+http://localhost:3000/host
+http://localhost:3000/graph
 
-Things you may want to cover:
+# deploy
 
-* Ruby version
-
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+`git push heroku default:master --force`

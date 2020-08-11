@@ -1,12 +1,12 @@
 import consumer from './consumer'
 
-const hostElm = document.getElementById('host')
+const logElm = document.getElementById('log')
 const AudioContext = window.AudioContext || window.webkitAudioContext
 let context = new AudioContext()
 const buffers = {}
 
 function print (msg) {
-  hostElm.insertAdjacentHTML('beforeend', `<p>${msg}</p>`)
+  logElm.insertAdjacentHTML('beforeend', `<p>${msg}</p>`)
 }
 consumer.subscriptions.create('RoomChannel', {
   connected () {
@@ -24,6 +24,12 @@ consumer.subscriptions.create('RoomChannel', {
 function play (name) {
   try {
     print('再生: ' + name)
+    if (name === 'choice') {
+      name = Array.from(document.querySelectorAll('input[name=choice]')).find(
+        x => x.checked
+      ).id
+      if (name === 'none') return
+    }
     const source = context.createBufferSource()
     source.buffer = buffers[name]
     source.connect(context.destination)
@@ -43,11 +49,12 @@ audioFiles.forEach(n =>
       print(JSON.stringify(e))
     })
 )
-document.addEventListener('touchstart', initAudioContext)
-function initAudioContext () {
-  document.removeEventListener('touchstart', initAudioContext)
-  // wake up AudioContext
-  const emptySource = context.createBufferSource()
-  emptySource.start()
-  emptySource.stop()
+const unlock = document.getElementById('unlock')
+if (context.state === 'suspended') {
+  unlock.addEventListener('touchstart', () => {
+    context.resume()
+    unlock.style.display = 'none'
+  })
+} else {
+  unlock.style.display = 'none'
 }
