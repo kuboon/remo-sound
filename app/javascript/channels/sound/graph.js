@@ -19,13 +19,19 @@ consumer.subscriptions.create('RoomChannel', {
   }
 })
 
+Object.withDefault = (defaultValue, o = {}) => {
+  return new Proxy(o, {
+    get: (o, k) => (k in o ? o[k] : defaultValue)
+  })
+}
+
 const size = 20
-const buf = Array.from({ length: size }, () => 0)
+const buf = Array.from({ length: size }, () => Object.withDefault(0))
 let yMax = 10
 function count (name) {
-  buf[size - 1] += 1
-  buf[size - 2] += 1
-  yMax = Math.max(yMax, buf[size - 1], buf[size - 2])
+  buf[size - 1][name] += 1
+  buf[size - 2][name] += 1
+  yMax = Math.max(yMax, buf[size - 1][name], buf[size - 2][name])
   draw()
   print('再生: ' + name)
 }
@@ -33,15 +39,29 @@ const ctx = canvas.getContext('2d')
 const barWidth = canvas.width / size
 function onInterval () {
   buf.shift()
-  buf.push(0)
+  buf.push(Object.withDefault(0))
   draw()
 }
 setInterval(onInterval, 1000)
+const props = {
+  cheer: { color: 'green', yAxis: -1 },
+  applause: { color: 'blue', yAxis: -1 },
+  choice: { color: 'red', yAxis: 1 }
+}
 function draw () {
   ctx.clearRect(0, 0, canvas.width, canvas.height)
-  ctx.fillStyle = 'green'
-  const yFactor = canvas.height / yMax
-  buf.forEach((v, i) => {
-    ctx.fillRect(barWidth * i, canvas.height, barWidth, -v * yFactor)
+  ctx.lineWidth = 10
+  Object.keys(props).forEach(name => {
+    const { color, yAxis } = props[name]
+    ctx.strokeStyle = color
+    const yFactor = ((canvas.height / yMax) * yAxis) / 2
+    const yZero = canvas.height / 2
+    ctx.beginPath()
+    ctx.moveTo(0, yZero)
+    buf.forEach((o, i) => {
+      const v = o[name]
+      ctx.lineTo(barWidth * i, yZero + v * yFactor)
+    })
+    ctx.stroke()
   })
 }
