@@ -6,3 +6,5 @@ const sub = consumer.subscriptions.create('RoomChannel', {
   }
 })
 window.send = name => sub.sound(name)
+const dice = Math.floor(Math.random() * 6) + 1
+window.gakki = () => sub.sound('gakki' + dice)

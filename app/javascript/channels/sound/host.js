@@ -6,7 +6,7 @@ let context = new AudioContext()
 const buffers = {}
 
 function print (msg) {
-  logElm.insertAdjacentHTML('beforeend', `<p>${msg}</p>`)
+  logElm.insertAdjacentHTML('afterbegin', `<p>${msg}</p>`)
 }
 consumer.subscriptions.create('RoomChannel', {
   connected () {
@@ -21,17 +21,33 @@ consumer.subscriptions.create('RoomChannel', {
     play(data.name)
   }
 })
+
+function sample (arr) {
+  if (arr && arr.length) {
+    return arr[Math.floor(Math.random() * arr.length)]
+  }
+}
 function play (name) {
-  try {
-    print('再生: ' + name)
-    if (name === 'choice') {
-      name = Array.from(document.querySelectorAll('input[name=choice]')).find(
+  print('受信: ' + name)
+  let key
+  switch (name) {
+    case 'clap':
+      key = sample(claps.concat(kansei))
+      break
+    case 'choice':
+      key = Array.from(document.querySelectorAll('input[name=choice]')).find(
         x => x.checked
-      ).id
-      if (name === 'none') return
-    }
+      ).nextSibling.textContent
+      break
+    default:
+      //gakki
+      key = name
+  }
+  print('再生: ' + key)
+  if (key === 'none') return
+  try {
     const source = context.createBufferSource()
-    source.buffer = buffers[name]
+    source.buffer = buffers[key]
     source.connect(context.destination)
     source.start()
   } catch (e) {
@@ -39,9 +55,14 @@ function play (name) {
   }
 }
 
-const audioFiles = ['cheer', 'applause']
+const claps = [...Array(9).keys()]
+  .map(n => `clap0${n + 1}`)
+  .concat('clap10', 'clap11')
+const kansei = [...Array(6).keys()].map(n => `kansei${n + 1}`)
+const gakki = [...Array(5).keys()].map(n => `gakki${n + 1}`)
+const audioFiles = [...claps, ...kansei, ...gakki]
 audioFiles.forEach(n =>
-  fetch(`/sounds/${n}.mp3`)
+  fetch(`/sounds/${n}.wav`)
     .then(r => r.arrayBuffer())
     .then(x => context.decodeAudioData(x, buf => (buffers[n] = buf)))
     .catch(e => {

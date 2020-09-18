@@ -15,7 +15,8 @@ consumer.subscriptions.create('RoomChannel', {
   },
 
   received (data) {
-    count(data.name)
+    const { name } = data
+    count(name.startsWith('gakki') ? 'gakki' : name)
   }
 })
 
@@ -44,8 +45,8 @@ function onInterval () {
 }
 setInterval(onInterval, 1000)
 const props = {
-  cheer: { color: 'green', yAxis: -1 },
-  applause: { color: 'blue', yAxis: -1 },
+  clap: { color: 'green', yAxis: -1 },
+  gakki: { color: 'blue', yAxis: -1 },
   choice: { color: 'red', yAxis: 1 }
 }
 function draw () {
