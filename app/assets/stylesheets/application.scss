@@ -53,11 +53,18 @@
 
 #buttons {
   margin: 2rem;
-  div {
+  > div {
     margin-top: 2rem;
     button {
       border-radius: 1rem;
       font-size: 4rem;
+    }
+  }
+  .row {
+    display: flex;
+    button {
+      height: 100%;
+      width: 100%;
     }
   }
 }

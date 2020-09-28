@@ -32,7 +32,10 @@ function play (name) {
   let key
   switch (name) {
     case 'clap':
-      key = sample(claps.concat(kansei))
+      key = sample(claps)
+      break
+    case 'applause':
+      key = sample(kansei)
       break
     case 'choice':
       key = Array.from(document.querySelectorAll('input[name=choice]')).find(
