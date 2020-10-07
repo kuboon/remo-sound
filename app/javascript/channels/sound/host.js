@@ -37,13 +37,14 @@ function play (name) {
       ).nextSibling.textContent
       break
     default:
-      key = sample(audioFiles[name])
+      key = name
   }
-  print('再生: ' + key)
+  const file = sample(audioFiles[key])
+  print('再生: ' + file)
   if (key === 'none') return
   try {
     const source = context.createBufferSource()
-    source.buffer = buffers[key]
+    source.buffer = buffers[file]
     source.connect(context.destination)
     source.start()
   } catch (e) {
@@ -62,12 +63,13 @@ const audioFiles = { clap, applause, namuami }
   .forEach(x => {
     audioFiles[x] = [`${x}.wav`]
   })
-  [('bell', 'coin', 'fuyuu', 'kane', 'osaisen')].forEach(x => {
-    audioFiles[x] = [`se/${x}.mp3`]
-  })
+
+;['bell', 'coin', 'fuyuu', 'kane', 'osaisen'].forEach(x => {
+  audioFiles[x] = [`se/${x}.mp3`]
+})
 
 const promises = Object.values(audioFiles)
-  .flatten()
+  .flat()
   .map(n =>
     fetch(`/sounds/${n}`)
       .then(r => r.arrayBuffer())
@@ -78,7 +80,7 @@ const promises = Object.values(audioFiles)
       })
   )
 Promise.all(promises).then(() => print('音源ロード完了'))
-      
+
 const unlock = document.getElementById('unlock')
 if (context.state === 'suspended') {
   unlock.addEventListener('touchstart', () => {
