@@ -31,20 +31,13 @@ function play (name) {
   print('受信: ' + name)
   let key
   switch (name) {
-    case 'clap':
-      key = sample(claps)
-      break
-    case 'applause':
-      key = sample(kansei)
-      break
     case 'choice':
       key = Array.from(document.querySelectorAll('input[name=choice]')).find(
         x => x.checked
       ).nextSibling.textContent
       break
     default:
-      //gakki
-      key = name
+      key = sample(audioFiles[name])
   }
   print('再生: ' + key)
   if (key === 'none') return
@@ -58,21 +51,34 @@ function play (name) {
   }
 }
 
-const claps = [...Array(9).keys()]
-  .map(n => `clap0${n + 1}`)
-  .concat('clap10', 'clap11')
-const kansei = [...Array(6).keys()].map(n => `kansei${n + 1}`)
-const gakki = [...Array(5).keys()].map(n => `gakki${n + 1}`)
-const audioFiles = [...claps, ...kansei, ...gakki]
-audioFiles.forEach(n =>
-  fetch(`/sounds/${n}.wav`)
-    .then(r => r.arrayBuffer())
-    .then(x => context.decodeAudioData(x, buf => (buffers[n] = buf)))
-    .catch(e => {
-      print(e)
-      print(JSON.stringify(e))
-    })
-)
+const clap = [...Array(9).keys()]
+  .map(n => `clap0${n + 1}.wav`)
+  .concat('clap10.wav', 'clap11.wav')
+const applause = [...Array(6).keys()].map(n => `kansei${n + 1}.wav`)
+const namuami = [...Array(3).keys()].map(n => `se/namuami${n + 1}.wav`)
+const audioFiles = { clap, applause, namuami }
+;[...Array(5).keys()]
+  .map(n => `gakki${n + 1}`)
+  .forEach(x => {
+    audioFiles[x] = [`${x}.wav`]
+  })
+  [('bell', 'coin', 'fuyuu', 'kane', 'osaisen')].forEach(x => {
+    audioFiles[x] = [`se/${x}.mp3`]
+  })
+
+const promises = Object.values(audioFiles)
+  .flatten()
+  .map(n =>
+    fetch(`/sounds/${n}`)
+      .then(r => r.arrayBuffer())
+      .then(x => context.decodeAudioData(x, buf => (buffers[n] = buf)))
+      .catch(e => {
+        print(e)
+        print(JSON.stringify(e))
+      })
+  )
+Promise.all(promises).then(() => print('音源ロード完了'))
+      
 const unlock = document.getElementById('unlock')
 if (context.state === 'suspended') {
   unlock.addEventListener('touchstart', () => {
