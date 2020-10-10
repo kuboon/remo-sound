@@ -16,7 +16,7 @@ consumer.subscriptions.create('RoomChannel', {
 
   received (data) {
     const { name } = data
-    count(name.startsWith('gakki') ? 'gakki' : name)
+    count((name.startsWith('gakki') ||name.startsWith('applause')) ? 'gakki' : name)
   }
 })
 
