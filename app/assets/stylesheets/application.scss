@@ -54,10 +54,14 @@
 #buttons {
   margin: 2rem;
   > div {
+    height: 40vh;
     margin-top: 2rem;
+    width: 100%;
     button {
       border-radius: 1rem;
       font-size: 4rem;
+      height: 100%;
+      width: 100%;
     }
   }
   .row {
