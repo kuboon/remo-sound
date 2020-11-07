@@ -1,6 +1,6 @@
 import consumer from './consumer'
 
-const sub = consumer.subscriptions.create('RoomChannel', {
+const sub = consumer.subscriptions.create({channel: 'RoomChannel', key: ch_key}, {
   sound: function (name) {
     return this.perform('sound', { name })
   }

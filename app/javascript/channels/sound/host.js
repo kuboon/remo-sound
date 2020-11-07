@@ -8,7 +8,7 @@ const buffers = {}
 function print (msg) {
   logElm.insertAdjacentHTML('afterbegin', `<p>${msg}</p>`)
 }
-consumer.subscriptions.create('RoomChannel', {
+consumer.subscriptions.create({channel: 'RoomChannel', key: ch_key}, {
   connected () {
     print('接続しました')
   },
