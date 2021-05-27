@@ -52,9 +52,7 @@ function play (name) {
   }
 }
 
-const clap = [...Array(9).keys()]
-  .map(n => `clap0${n + 1}.wav`)
-  .concat('clap10.wav', 'clap11.wav')
+const clap = [...Array(5).keys()].map(n => `clap${n}.wav`)
 const applause = [...Array(6).keys()].map(n => `kansei${n + 1}.wav`)
 const namuami = [...Array(3).keys()].map(n => `se/namuami${n + 1}.wav`)
 const audioFiles = { clap, applause, namuami }
