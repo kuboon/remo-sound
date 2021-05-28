@@ -2,7 +2,7 @@
 <div id="host">
 <h1>RemoSound Host</h1>
 <p><%= link_to 'グラフ', graph_path(@key) %>
-<p><textarea rows=1 cols=100><%= guest_url(@ch_key) %></textarea>
+<p><textarea rows=1 cols=100 onclick="this.select()"><%= guest_url(@ch_key) %></textarea>
 <div id='choice'>
   <button id="unlock">connect</button>
   <label><input type='radio' name='choice' checked>none</label>
